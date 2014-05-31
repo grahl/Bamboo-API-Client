@@ -85,4 +85,18 @@ class Bamboo
     {
         return $this->client->get(sprintf('plan/%s-%s/branch/%s', $project, $plan, $branch));
     }
+    
+    /**
+     * Return single build result for a specific plan
+     *
+     * @param  string $project  Project name
+     * @param  string $plan     Plan name
+     * @param  string $number   Build name
+     *
+     * @return array
+     */
+    public function getResult($project, $plan, $number)
+    {
+        return $this->client->get(sprintf('result/%s-%s/%s', $project, $plan, $number));
+    }
 }
