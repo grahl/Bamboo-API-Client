@@ -10,7 +10,12 @@ use GuzzleHttp\Url;
  */
 class GuzzleClient implements ClientInterface
 {
-    /**
+    /* @var $client \GuzzleHttp\Client; */
+    private $client;
+    private $username;
+    private $password;
+
+  /**
      * @param string $url
      * @param string $apiVersion
      * @param string $username
@@ -20,7 +25,7 @@ class GuzzleClient implements ClientInterface
     public function __construct($url, $apiVersion, $username, $password)
     {
         $this->client = new Client([
-            'base_url' => $this->buildUrl($url, $apiVersion)
+            'base_uri' => $this->buildUrl($url, $apiVersion)
         ]);
 
         $this->configureClient($username, $password);
@@ -31,9 +36,13 @@ class GuzzleClient implements ClientInterface
      */
     public function get($url)
     {
-        $response = $this->client->get($url);
+        $response = $this->client->get($url, [
+          'headers', ['Accept' => 'application/json'],
+          'auth', [$this->username, $this->password],
+          'query', ['os_authType' => 'basic']
+        ]);
 
-        return $response->json();
+        return json_decode($response->getBody());
     }
 
     /**
