@@ -45,10 +45,7 @@ class GuzzleClient implements ClientInterface
      */
     private function buildUrl($url, $apiVersion)
     {
-        return (string) Url::fromString($url)
-            ->addPath('rest')
-            ->addPath('api/')
-            ->addPath($apiVersion . '/');
+      return $url . '/rest/api/' . $apiVersion . '/';
     }
 
     private function configureClient($username, $password)
