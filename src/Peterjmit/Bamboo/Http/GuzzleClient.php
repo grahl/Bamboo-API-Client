@@ -25,10 +25,11 @@ class GuzzleClient implements ClientInterface
     public function __construct($url, $apiVersion, $username, $password)
     {
         $this->client = new Client([
-            'base_uri' => $this->buildUrl($url, $apiVersion)
+          'base_uri' => $this->buildUrl($url, $apiVersion),
+          'headers' => ['Accept' => 'application/json'],
+          'auth' => [$username, $password],
+          'query' => ['os_authType' => 'basic'],
         ]);
-
-        $this->configureClient($username, $password);
     }
 
     /**
@@ -36,11 +37,7 @@ class GuzzleClient implements ClientInterface
      */
     public function get($url)
     {
-        $response = $this->client->get($url, [
-          'headers', ['Accept' => 'application/json'],
-          'auth', [$this->username, $this->password],
-          'query', ['os_authType' => 'basic']
-        ]);
+        $response = $this->client->get($url);
 
         return json_decode($response->getBody());
     }
@@ -55,12 +52,5 @@ class GuzzleClient implements ClientInterface
     private function buildUrl($url, $apiVersion)
     {
       return $url . '/rest/api/' . $apiVersion . '/';
-    }
-
-    private function configureClient($username, $password)
-    {
-        $this->client->setDefaultOption('headers', ['Accept' => 'application/json']);
-        $this->client->setDefaultOption('auth', [$username, $password]);
-        $this->client->setDefaultOption('query', ['os_authType' => 'basic']);
     }
 }
